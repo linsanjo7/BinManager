@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:text="List of full bins"
+        android:text="My Tasks"
         android:textColor="@android:color/black"
         android:textSize="18sp"
         tools:layout_editor_absoluteX="0dp"
@@ -32,8 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
+        android:layout_centerHorizontal="true"
         android:text="Go to nearest full bin" />
 
 </RelativeLayout>
