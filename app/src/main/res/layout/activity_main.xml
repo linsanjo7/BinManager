@@ -26,6 +26,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="58dp"
         android:text="Driver Name"
+        android:textColor="@android:color/black"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -36,7 +37,8 @@
         android:layout_below="@+id/textView"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="13dp"
-        android:text="Driver Place" />
+        android:text="Driver Place"
+        android:textColor="@android:color/black" />
 
     <TextView
         android:id="@+id/textView4"
@@ -45,7 +47,8 @@
         android:layout_below="@+id/textView2"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
-        android:text="Driver District" />
+        android:text="Driver Number"
+        android:textColor="@android:color/black" />
 
     <Button
         android:id="@+id/button4"
