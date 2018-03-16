@@ -14,12 +14,13 @@ public class MainActivity extends AppCompatActivity {
     SharedPreferences sp;
     SharedPreferences.Editor ed;
     TextView name,place,number;
+    Button task;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button view = findViewById(R.id.button2);
+        task = findViewById(R.id.button2);
         sp = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
         ed = sp.edit();
         name = findViewById(R.id.textView);
@@ -29,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         place.setText(sp.getString("place","Driver place"));
         number.setText(sp.getString("number","Driver number"));
         Toast.makeText(this, ""+sp.getString("email_id","null"), Toast.LENGTH_SHORT).show();
-        view.setOnClickListener(new View.OnClickListener() {
+        task.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(MainActivity.this,Main2Activity.class);

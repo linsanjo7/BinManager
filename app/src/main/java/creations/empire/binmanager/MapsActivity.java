@@ -19,6 +19,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
     private Button navigate,mark;
+    Bundle bundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,11 +29,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         navigate = findViewById(R.id.button8);
+        bundle = getIntent().getExtras();
         mark = findViewById(R.id.button9);
         navigate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri gmmIntentUri = Uri.parse("google.navigation:q=Civil+Station,+Trivandrum+India");
+                Uri gmmIntentUri = Uri.parse("google.navigation:q="+bundle.getString("location"));
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 mapIntent.setPackage("com.google.android.apps.maps");
                 startActivity(mapIntent);
@@ -64,7 +66,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng sydney = new LatLng(8.548474,  76.960539);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Full Bin"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-        mMap.getMaxZoomLevel();
+        mMap.getMinZoomLevel();
     }
 
 }

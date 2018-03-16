@@ -69,7 +69,7 @@ public class LoginActivity extends AppCompatActivity {
     SharedPreferences sp;
     SharedPreferences.Editor ed;
     Bundle bundle;
-    String ip,port,web_response,username,password,resp;
+    String ip,port,username,password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +84,8 @@ public class LoginActivity extends AppCompatActivity {
         if (bundle != null) {
             ip = bundle.getString("ip");
             port = bundle.getString("port");
+            ed.putString("ip",ip);
+            ed.putString("port",port);
         }
         Button mEmailSignInButton = findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
