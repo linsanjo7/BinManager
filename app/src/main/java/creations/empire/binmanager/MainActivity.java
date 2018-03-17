@@ -14,13 +14,15 @@ public class MainActivity extends AppCompatActivity {
     SharedPreferences sp;
     SharedPreferences.Editor ed;
     TextView name,place,number;
-    Button task;
+    Button task,areas,profile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         task = findViewById(R.id.button2);
+        areas = findViewById(R.id.button6);
+        profile = findViewById(R.id.button4);
         sp = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
         ed = sp.edit();
         name = findViewById(R.id.textView);
@@ -29,13 +31,25 @@ public class MainActivity extends AppCompatActivity {
         name.setText(sp.getString("name","Driver Name"));
         place.setText(sp.getString("place","Driver place"));
         number.setText(sp.getString("number","Driver number"));
-        Toast.makeText(this, ""+sp.getString("email_id","null"), Toast.LENGTH_SHORT).show();
         task.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(MainActivity.this,Main2Activity.class);
                 startActivity(i);
-
+            }
+        });
+        areas.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent j = new Intent(MainActivity.this,MyAreas.class);
+                startActivity(j);
+            }
+        });
+        profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent k = new Intent(MainActivity.this,ProfileView.class);
+                startActivity(k);
             }
         });
     }

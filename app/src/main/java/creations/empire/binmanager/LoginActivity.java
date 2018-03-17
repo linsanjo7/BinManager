@@ -1,44 +1,23 @@
 package creations.empire.binmanager;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
-
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.AsyncTask;
-
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.text.TextUtils;
+import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -46,19 +25,10 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
-import static android.Manifest.permission.READ_CONTACTS;
 
 
 public class LoginActivity extends AppCompatActivity {
 
-
-    private static final int REQUEST_READ_CONTACTS = 0;
-
-
-    private static final String[] DUMMY_CREDENTIALS = new String[]{"foo@example.com:hello", "bar@example.com:world"};
 
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -69,7 +39,8 @@ public class LoginActivity extends AppCompatActivity {
     SharedPreferences sp;
     SharedPreferences.Editor ed;
     Bundle bundle;
-    String ip,port,username,password;
+    String ip,port,username,password,resp;
+    int flag = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,9 +67,9 @@ public class LoginActivity extends AppCompatActivity {
                 else {
                     username = mEmailView.getText().toString();
                     password = mPasswordView.getText().toString();
+                    ed.putString("username",username);
+                    ed.putString("password",password);
                     if (isNetworkAvailable()) {
-                        String req = "http://"+ip+":"+port+"/smartbin/login?user="+username+"&passwd="+password;
-                        Toast.makeText(LoginActivity.this, req, Toast.LENGTH_SHORT).show();
                         new AsyncHttpTask().execute("http://"+ip+":"+port+"/smartbin/login?user="+username+"&passwd="+password);
                     } else {
                         Toast.makeText(LoginActivity.this, "Not Available", Toast.LENGTH_LONG).show();
@@ -149,6 +120,8 @@ public class LoginActivity extends AppCompatActivity {
                     Log.e("d",response.toString()+"");
                     String res = response.toString();
                     parseResult(res);
+                    if(resp.equals("true"))
+                        flag = 1;
                     result = "1"; // Successful
                 } else
                 {
@@ -177,13 +150,14 @@ public class LoginActivity extends AppCompatActivity {
         protected void onPostExecute (String s){
             super.onPostExecute(s);
             pdialog.dismiss();
-            //if(resp.equals("sucess")){
+            if(flag == 1){
                 Intent i = new Intent(LoginActivity.this,MainActivity.class);
                 Log.e("d","post execute successful");
                 startActivity(i);
-          //  }
-          //  else
-            //    Toast.makeText(LoginActivity.this, "invalid credentials", Toast.LENGTH_SHORT).show();
+                flag = 0;
+            }
+            else
+                Toast.makeText(LoginActivity.this, "invalid credentials", Toast.LENGTH_SHORT).show();
 
         }
     }
@@ -198,6 +172,7 @@ public class LoginActivity extends AppCompatActivity {
             ed.putString("place",ja.getString("address"));
             ed.putString("number",ja.getString("mobileNo"));
             ed.commit();
+            resp = root.getString("success");
         } catch (JSONException e) {
             e.printStackTrace();
         }
