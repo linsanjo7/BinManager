@@ -27,7 +27,7 @@
         android:layout_marginTop="58dp"
         android:text="Driver Name"
         android:textColor="@android:color/black"
-        android:textSize="18sp"
+        android:textSize="24sp"
         android:textStyle="bold" />
 
     <TextView
@@ -38,7 +38,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="13dp"
         android:text="Driver Place"
-        android:textColor="@android:color/black" />
+        android:textColor="@android:color/black"
+        android:textSize="18sp" />
 
     <TextView
         android:id="@+id/textView4"
@@ -48,7 +49,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
         android:text="Driver Number"
-        android:textColor="@android:color/black" />
+        android:textColor="@android:color/black"
+        android:textSize="18sp" />
 
     <Button
         android:id="@+id/button4"
@@ -56,8 +58,8 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/button2"
         android:layout_alignBottom="@+id/button2"
-        android:layout_toEndOf="@+id/textView"
-        android:layout_toRightOf="@+id/textView"
+        android:layout_toEndOf="@+id/textView2"
+        android:layout_toRightOf="@+id/textView2"
         android:text="My profile" />
 
     <Button
@@ -77,6 +79,6 @@
         android:layout_alignBottom="@+id/button6"
         android:layout_alignEnd="@+id/button4"
         android:layout_alignRight="@+id/button4"
-        android:text="About" />
+        android:text="History" />
 
 </RelativeLayout>

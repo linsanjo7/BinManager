@@ -29,9 +29,8 @@ import java.util.List;
 
 public class ProfileView extends AppCompatActivity {
     TextView name, address, phone, email;
-    List<DriverInfo> driverInfos = new ArrayList<>();
     Bundle bundle;
-    String ip, port, username, password;
+    String ip, port, username, password, sname, saddress, sphone, semail;
     SharedPreferences sp;
     SharedPreferences.Editor ed;
     ProgressDialog pdialog;
@@ -39,6 +38,7 @@ public class ProfileView extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.profile_layout);
         name = findViewById(R.id.name_field);
         address = findViewById(R.id.address_field);
         phone = findViewById(R.id.no_field);
@@ -46,12 +46,10 @@ public class ProfileView extends AppCompatActivity {
         bundle = getIntent().getExtras();
         sp = PreferenceManager.getDefaultSharedPreferences(ProfileView.this);
         ed = sp.edit();
-        if (bundle != null) {
-            ip = bundle.getString("ip");
-            port = bundle.getString("port");
+            ip = sp.getString("ip","");
+            port = sp.getString("port","");
             username = sp.getString("username", "");
             password = sp.getString("password", "");
-        }
         if (isNetworkAvailable()) {
             new ProfileView.AsyncHttpTask().execute("http://" + ip + ":" + port + "/smartbin/login?user=" + username + "&passwd=" + password);
         } else {
@@ -121,6 +119,10 @@ public class ProfileView extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            name.setText(sname);
+            address.setText(saddress);
+            phone.setText(sphone);
+            email.setText(semail);
             pdialog.dismiss();
         }
     }
@@ -132,10 +134,10 @@ public class ProfileView extends AppCompatActivity {
         try {
             root = new JSONObject(response_string);
             JSONObject ja = root.getJSONObject("payLoad");
-            name.setText(ja.getString("userName"));
-            address.setText(ja.getString("address"));
-            phone.setText(ja.getString("mobileNo"));
-            email.setText(ja.getString("emailId"));
+            sname = ja.getString("userName");
+            saddress = ja.getString("address");
+            sphone = ja.getString("mobileNo");
+            semail = ja.getString("emailId");
         } catch (JSONException e) {
             e.printStackTrace();
         }
