@@ -2,19 +2,19 @@ package creations.empire.binmanager;
 
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.Adapter;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,42 +22,31 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ProfileView extends AppCompatActivity {
-    TextView name, address, phone, email;
-    Bundle bundle;
-    String ip, port, username, password, sname, saddress, sphone, semail;
+public class HistoryView extends AppCompatActivity{
     SharedPreferences sp;
     SharedPreferences.Editor ed;
+    List<String> placeList;
+    String ip,port,mailid;
+    ListView his_list;
     ProgressDialog pdialog;
+    Adapter adapter;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.profile_layout);
-        name = findViewById(R.id.name_field);
-        address = findViewById(R.id.address_field);
-        phone = findViewById(R.id.no_field);
-        email = findViewById(R.id.email_field);
-        bundle = getIntent().getExtras();
-        sp = PreferenceManager.getDefaultSharedPreferences(ProfileView.this);
+        setContentView(R.layout.history_layout);
+        his_list = findViewById(R.id.history_list);
+        sp = PreferenceManager.getDefaultSharedPreferences(HistoryView.this);
         ed = sp.edit();
-            ip = sp.getString("ip","");
-            port = sp.getString("port","");
-            username = sp.getString("username", "");
-            password = sp.getString("password", "");
-        if (isNetworkAvailable()) {
-            new ProfileView.AsyncHttpTask().execute("http://" + ip + ":" + port + "/smartbin/login?user=" + username + "&passwd=" + password);
-        } else {
-            Toast.makeText(ProfileView.this, "Not Available", Toast.LENGTH_LONG).show();
-        }
-
-    }
-
-    public boolean isNetworkAvailable() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected();
+        placeList = new ArrayList<>();
+        ip = sp.getString("ip", "0");
+        port = sp.getString("port", "0000");
+        mailid = sp.getString("username", "null");
+        new HistoryView.AsyncHttpTask().execute("http://" + ip + ":" + port + "/smartbin/bin-history?driver-id=" + mailid);
     }
 
     public class AsyncHttpTask extends AsyncTask<String, Void, String> {
@@ -105,7 +94,7 @@ public class ProfileView extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
 
-            pdialog = new ProgressDialog(ProfileView.this);
+            pdialog = new ProgressDialog(HistoryView.this);
             pdialog.setMessage("Processing....");
             pdialog.setCancelable(false);
             pdialog.show();
@@ -115,11 +104,9 @@ public class ProfileView extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            name.setText(sname);
-            address.setText(saddress);
-            phone.setText(sphone);
-            email.setText(semail);
             pdialog.dismiss();
+            adapter = new ArrayAdapter(HistoryView.this, android.R.layout.simple_list_item_1, placeList);
+            his_list.setAdapter((ListAdapter) adapter);
         }
     }
 
@@ -129,15 +116,17 @@ public class ProfileView extends AppCompatActivity {
         JSONObject root = null;
         try {
             root = new JSONObject(response_string);
-            JSONObject ja = root.getJSONObject("payLoad");
-            sname = ja.getString("userName");
-            saddress = ja.getString("address");
-            sphone = ja.getString("mobileNo");
-            semail = ja.getString("emailId");
+            JSONArray jam = root.getJSONArray("returnList");
+            int len = jam.length();
+            Log.e("d", len + "");
+            for (int i = len-1; i > 0; i--) {
+                JSONObject ja = jam.getJSONObject(i);
+                placeList.add(ja.getJSONObject("tsbinInfo").getString("sbinName"));
+            }
+            Log.e("d", placeList + "");
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
 
     }
 }

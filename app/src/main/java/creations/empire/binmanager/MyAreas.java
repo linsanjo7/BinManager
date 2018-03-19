@@ -44,7 +44,7 @@ public class MyAreas extends AppCompatActivity {
         placeList = new ArrayList<>();
         ip = sp.getString("ip", "0");
         port = sp.getString("port", "0000");
-        mailid = sp.getString("email_id", "null");
+        mailid = sp.getString("username", "null");
         new MyAreas.AsyncHttpTask().execute("http://" + ip + ":" + port + "/smartbin/all-areas?driver-id=" + mailid + "&status=0");
     }
 

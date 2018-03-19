@@ -3,7 +3,6 @@ package creations.empire.binmanager;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -13,7 +12,6 @@ import android.view.View;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
@@ -47,8 +45,8 @@ public class Main2Activity extends AppCompatActivity {
         ed = sp.edit();
         ip = sp.getString("ip","0");
         port = sp.getString("port","0000");
-        mailid = sp.getString("email_id","null");
-        new Main2Activity.AsyncHttpTask().execute("http://"+ip+":"+port+"/smartbin/all-bins?driver-id="+mailid+"&status=0");
+        mailid = sp.getString("username","null");
+        new Main2Activity.AsyncHttpTask().execute("http://"+ip+":"+port+"/smartbin/all-bins?driver-id="+mailid+"&status=1");
         placeList = new ArrayList<>();
         placeDetails = new ArrayList<>();
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
