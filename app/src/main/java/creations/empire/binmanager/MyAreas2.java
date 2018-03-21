@@ -11,6 +11,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.Adapter;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,33 +29,40 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HistoryView extends AppCompatActivity{
+
+public class MyAreas2 extends AppCompatActivity {
+
+
+    Bundle bundle;
+    RecyclerView my_area;
     SharedPreferences sp;
     SharedPreferences.Editor ed;
-    List<BinHistroyInfo> placeList = new ArrayList<>();
-    String ip,port,mailid;
-    RecyclerView his_list;
     ProgressDialog pdialog;
-    RecyclerViewAdapter recyclerViewAdapter;
-
-
+    String ip, port, mailid;
+    List<AreaInfo> placeDetail;
+    RecyclerViewAdapter2 adapter;
+    int i;
+    String binid,simno,gaurdno,address,clrtime,status;
+    Long simnos;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.history_layout);
-        his_list = findViewById(R.id.history_list);
-        his_list.setLayoutManager(new GridLayoutManager(this, 1));
-        sp = PreferenceManager.getDefaultSharedPreferences(HistoryView.this);
+        setContentView(R.layout.layout_areas2);
+        my_area = findViewById(R.id.view_recycler);
+        my_area.setLayoutManager(new GridLayoutManager(this, 1));
+        bundle = getIntent().getExtras();
+        sp = PreferenceManager.getDefaultSharedPreferences(MyAreas2.this);
         ed = sp.edit();
-        placeList = new ArrayList<>();
+        placeDetail = new ArrayList<>();
         ip = sp.getString("ip", "0");
         port = sp.getString("port", "0000");
         mailid = sp.getString("username", "null");
-        new HistoryView.AsyncHttpTask().execute("http://" + ip + ":" + port + "/smartbin/bin-history?driver-id=" + mailid);
+        i = bundle.getInt("position");
+        new MyAreas2.AsyncHttpTask().execute("http://" + ip + ":" + port + "/smartbin/all-areas?driver-id=" + mailid + "&status=0");
+
     }
 
     public class AsyncHttpTask extends AsyncTask<String, Void, String> {
-
 
         @Override
         protected String doInBackground(String... params) {
@@ -93,7 +106,7 @@ public class HistoryView extends AppCompatActivity{
         @Override
         protected void onPreExecute() {
 
-            pdialog = new ProgressDialog(HistoryView.this);
+            pdialog = new ProgressDialog(MyAreas2.this);
             pdialog.setMessage("Processing....");
             pdialog.setCancelable(false);
             pdialog.show();
@@ -104,8 +117,10 @@ public class HistoryView extends AppCompatActivity{
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             pdialog.dismiss();
-            recyclerViewAdapter = new RecyclerViewAdapter(getApplicationContext(),placeList);
-            his_list.setAdapter(recyclerViewAdapter);
+            adapter = new RecyclerViewAdapter2(getApplicationContext(),placeDetail);
+            if(placeDetail.isEmpty()) Toast.makeText(getApplicationContext(), "No Bins", Toast.LENGTH_SHORT).show();
+            else
+            my_area.setAdapter(adapter);
         }
     }
 
@@ -116,14 +131,25 @@ public class HistoryView extends AppCompatActivity{
         try {
             root = new JSONObject(response_string);
             JSONArray jam = root.getJSONArray("returnList");
-            int len = jam.length();
-            Log.e("d", len + "");
-            for (int i = len-1; i>=0; i--) {
+            int len2;
                 JSONObject ja = jam.getJSONObject(i);
-                BinHistroyInfo binHistroyInfo = new BinHistroyInfo(ja.getJSONObject("tsbinInfo").getString("sbinId"),ja.getJSONObject("tsbinInfo").getString("sbinName"),ja.getJSONObject("tsbinInfo").getString("address"),ja.getJSONObject("tsbinInfo").getString("lastClearTime"));
-                placeList.add(binHistroyInfo);
-            }
-            Log.e("d", placeList + "");
+                JSONArray bin = ja.getJSONArray("tsbinInfos");
+                len2 = bin.length();
+                Log.e("d", len2 + "ee");
+                for (int j = 0; j < len2; j++) {
+                    JSONObject lam = bin.getJSONObject(j);
+                    binid = lam.getString("sbinId");
+                    simno = (lam.getString("simNo"));
+                    gaurdno = lam.getString("guardianNo");
+                    address = lam.getString("address");
+                    clrtime = lam.getString("lastClearTime");
+                    status = lam.getString("sbinStatus");
+                    AreaInfo detail = new AreaInfo(binid, simno, gaurdno, address, clrtime, status);
+                    placeDetail.add(detail);
+                    Log.e("d",detail.toString());
+                }
+
+            Log.e("d", placeDetail + "");
         } catch (JSONException e) {
             e.printStackTrace();
         }

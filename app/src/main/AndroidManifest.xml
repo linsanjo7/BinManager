@@ -51,5 +51,6 @@
         <activity android:name=".MyAreas"/>
         <activity android:name=".ProfileView"/>
         <activity android:name=".HistoryView"/>
+        <activity android:name=".MyAreas2"/>
     </application>
 </manifest>

@@ -2,6 +2,7 @@ package creations.empire.binmanager;
 
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -9,7 +10,9 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -32,6 +35,7 @@ public class MyAreas extends AppCompatActivity {
     ProgressDialog pdialog;
     String ip,port,mailid;
     List<String> placeList;
+    List<AreaInfo> placeDetail;
     Adapter adapter;
 
     @Override
@@ -42,14 +46,22 @@ public class MyAreas extends AppCompatActivity {
         sp = PreferenceManager.getDefaultSharedPreferences(MyAreas.this);
         ed = sp.edit();
         placeList = new ArrayList<>();
+        placeDetail = new ArrayList<>();
         ip = sp.getString("ip", "0");
         port = sp.getString("port", "0000");
         mailid = sp.getString("username", "null");
+        my_area.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent i = new Intent(MyAreas.this,MyAreas2.class);
+                i.putExtra("position",position);
+                startActivity(i);
+            }
+        });
         new MyAreas.AsyncHttpTask().execute("http://" + ip + ":" + port + "/smartbin/all-areas?driver-id=" + mailid + "&status=0");
     }
 
     public class AsyncHttpTask extends AsyncTask<String, Void, String> {
-
 
         @Override
         protected String doInBackground(String... params) {
@@ -117,10 +129,12 @@ public class MyAreas extends AppCompatActivity {
             root = new JSONObject(response_string);
             JSONArray jam = root.getJSONArray("returnList");
             int len = jam.length();
+            int len2;
             Log.e("d", len + "");
             for (int i = 0; i < len; i++) {
                 JSONObject ja = jam.getJSONObject(i);
                 placeList.add(ja.getString("areaName"));
+
             }
             Log.e("d", placeList + "");
         } catch (JSONException e) {

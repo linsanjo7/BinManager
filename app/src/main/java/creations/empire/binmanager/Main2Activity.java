@@ -46,7 +46,7 @@ public class Main2Activity extends AppCompatActivity {
         ip = sp.getString("ip","0");
         port = sp.getString("port","0000");
         mailid = sp.getString("username","null");
-        new Main2Activity.AsyncHttpTask().execute("http://"+ip+":"+port+"/smartbin/all-bins?driver-id="+mailid+"&status=1");
+        new Main2Activity.AsyncHttpTask().execute("http://"+ip+":"+port+"/smartbin/all-bins?driver-id="+mailid+"&status=0");
         placeList = new ArrayList<>();
         placeDetails = new ArrayList<>();
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
